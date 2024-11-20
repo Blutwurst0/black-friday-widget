@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Friday Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+        }
+        #black-friday-widget {
+            text-align: center;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 400px;
+            background: #2e2e2e;
+            color: #fff;
+            border-radius: 10px;
+            border: 3px solid #8bc34a;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        #black-friday-widget h2 {
+            margin: 0 0 10px;
+        }
+        #countdown {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        #orders-left {
+            font-size: 1.5rem;
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div id="black-friday-widget">
+        <h2>🌟 Black Friday Angebot 🌟</h2>
+        <div id="countdown">--:--:--</div>
+        <div id="orders-left">Verbleibende Bestellungen: 200</div>
+        <p>Beeilen Sie sich! Das Angebot läuft aus.</p>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const endDate = new Date("2024-11-24T23:59:59").getTime();
+            let ordersLeft = 200;
+            const orderReductionStart = new Date("2024-11-22T07:00:00").getTime();
+            const orderReductionEnd = new Date("2024-11-24T13:00:00").getTime();
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const timeLeft = endDate - now;
+
+                if (ordersLeft <= 0 || timeLeft <= 0) {
+                    document.getElementById("countdown").textContent = "Angebot beendet!";
+                    return;
+                }
+
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60)) / (1000));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                document.getElementById("countdown").textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }
+
+            function reduceOrders() {
+                const now = new Date();
+                const currentHour = now.getHours();
+                const currentTime = now.getTime();
+
+                if (currentHour >= 7 && currentHour < 23 && currentTime >= orderReductionStart && currentTime < orderReductionEnd) {
+                    const reduction = Math.floor(Math.random() * 3) + 1; // Reduce by 1-3 orders
+                    ordersLeft -= reduction;
+                    if (ordersLeft < 0) ordersLeft = 0;
+
+                    document.getElementById("orders-left").textContent = `Verbleibende Bestellungen: ${ordersLeft}`;
+                }
+
+                const nextReductionTime = Math.random() * 600000 + 300000; // 5-15 Minuten
+                if (ordersLeft > 0) {
+                    setTimeout(reduceOrders, nextReductionTime);
+                }
+            }
+
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+            reduceOrders();
+        });
+    </script>
+</body>
+</html>
